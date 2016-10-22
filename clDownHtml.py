@@ -34,7 +34,18 @@ class ContextDownLoader(object):
     
     def downHtmlCont(self):
         headers = {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36'}
-        get_url = requests.get(self.link, headers=headers)
+        while True:
+            try:
+                get_url = requests.get(self.link, headers=headers)
+                break
+            except requests.exceptions.ContentDecodingError as e:
+                print('网页读取错误正在重试...')
+                time.sleep(1)
+                continue
+            except requests.exceptions.ProxyError as e:    
+                print('网络连接错误正在重试...')
+                time.sleep(1)
+                continue
         codingTypr = get_url.encoding
         soup = BeautifulSoup(get_url.text,"html5lib")
         titleList = soup.find_all("title")
