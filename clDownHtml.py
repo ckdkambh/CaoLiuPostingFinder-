@@ -49,7 +49,10 @@ class ContextDownLoader(object):
         codingTypr = get_url.encoding
         soup = BeautifulSoup(get_url.text,"html5lib")
         titleList = soup.find_all("title")
-        title = titleList[0].string.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore').split('草')[0]
+        try:
+            title = titleList[0].string.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore').split('草')[0]
+        except IndexError as e:
+            return
         print('down loading:%s'%(title))
         fpath = self.path+title+'.html'
         try:

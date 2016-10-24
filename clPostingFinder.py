@@ -11,9 +11,9 @@ url_source="http://www.t66y.com/thread0806.php?fid=7&search=&page="
 posting_url_title="http://www.t66y.com/"
 keyWord = '精华'
 path = 'D:\\1111\\'
-isFliter = 1
+isFliter = 0
 startNum = 1
-endNum = 100
+endNum = 1
 
 def getTopicList():
     curNum = startNum
