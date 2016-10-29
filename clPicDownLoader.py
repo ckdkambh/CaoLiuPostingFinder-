@@ -6,12 +6,25 @@ import time
 from urllib.request import urlretrieve
 import os
 
-url="http://www.t66y.com/htm_data/7/1610/2107947.html"
-path = 'D:\\1111\\'
+url="http://www.t66y.com/htm_data/7/1610/2116257.html"
+path = 'D:\\2222\\'
 
 def getTopicList():
+    if not os.path.isdir(path):
+        os.mkdir(path)
     headers = {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36'}
-    get_url = requests.get(url, headers=headers)
+    while True:
+        try:
+            get_url = requests.get(url, headers=headers)
+            break
+        except requests.exceptions.ContentDecodingError as e:
+            print('网页读取错误正在重试...')
+            time.sleep(1)
+            continue
+        except requests.exceptions.ProxyError as e:    
+            print('网络连接错误正在重试...')
+            time.sleep(1)
+            continue
     codingTypr = get_url.encoding
     soup = BeautifulSoup(get_url.text,"html.parser")
     titleList = soup.find_all("title")
