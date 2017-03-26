@@ -27,11 +27,19 @@ def getTopicList():
         try:
             get_url = requests.get(url)
         except requests.exceptions.ContentDecodingError as e:
-            print('网页读取错误正在重试...')
+            print('requests.exceptions.ContentDecodingError...')
             time.sleep(1)
             continue
         except requests.exceptions.ProxyError as e:    
-            print('网络连接错误正在重试...')
+            print('equests.exceptions.ProxyError...')
+            time.sleep(1)
+            continue
+        except requests.packages.urllib3.exceptions.ProtocolError as e:    
+            print('requests.packages.urllib3.exceptions.ProtocolError...')
+            time.sleep(1)
+            continue
+        except requests.exceptions.ConnectionError as e:    
+            print('requests.exceptions.ConnectionError...')
             time.sleep(1)
             continue
         codingTypr = get_url.encoding
