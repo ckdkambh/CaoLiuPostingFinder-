@@ -13,7 +13,7 @@ keyWord = '精华'
 path = 'D:\\1111\\'
 isFliter = 0
 startNum = 1
-endNum = 1
+endNum = 2
 
 def getTopicList():
     curNum = startNum

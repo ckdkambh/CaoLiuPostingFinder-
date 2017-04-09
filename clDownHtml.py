@@ -7,7 +7,7 @@ from urllib.request import urlretrieve
 import os
 
 sys.setrecursionlimit(1000000) #例如这里设置为一百万
-url="http://www.t66y.com/htm_data/7/1610/2110560.html"
+url="http://www.t66y.com/htm_data/7/1703/2282688.html"
 path = 'D:\\1111\\'
   
 
@@ -72,6 +72,14 @@ class ContextDownLoader(object):
             return
         imgList = soup.find_all("div", class_="tpc_content do_not_catch")
         for i in imgList:
+            #mod a link
+            linkList = i.find_all("a", target="_blank")
+            for j in linkList:
+                j["href"] = j.string
+            #mod img link    
+            imgList = i.find_all("img")
+            for j in imgList:
+                del j["onclick"]
             xmlText = i.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore')
             try:
                 with open(fpath, 'a') as f:
