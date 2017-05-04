@@ -19,7 +19,7 @@ class ContextDownLoader(object):
         self.path = path
     
     def setLink(self,link):
-        self.link = page
+        self.link = link
         return self
     
     def getLink(self):
@@ -58,7 +58,7 @@ class ContextDownLoader(object):
         soup = BeautifulSoup(get_url.text,"html5lib")
         titleList = soup.find_all("title")
         try:
-            title = titleList[0].string.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore').split('草')[0]
+            title = titleList[0].string.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore').split('草榴')[0]
         except IndexError as e:
             return
         print('down loading:%s'%(title))
