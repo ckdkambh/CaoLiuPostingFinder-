@@ -13,7 +13,7 @@ keyWord = '精华'
 path = 'D:\\1111\\'
 isFliter = 0
 startNum = 1
-endNum = 2
+endNum = 4
 
 def getTopicList():
     curNum = startNum
@@ -22,7 +22,7 @@ def getTopicList():
         if not os.path.isdir(filePathName):
             os.mkdir(filePathName)
     while curNum <= endNum:
-        print('第%d页\n'%(curNum))
+        print('第%d页'%(curNum))
         url=url_source+str(curNum)
         try:
             get_url = requests.get(url)
@@ -45,6 +45,7 @@ def getTopicList():
         codingTypr = get_url.encoding
         soup = BeautifulSoup(get_url.text,"html.parser")
         tdList = soup.find_all("h3")
+        item_count = 1
         for i in tdList:
             title = i.a.string.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore')
             if 1 == isFliter :
@@ -52,8 +53,10 @@ def getTopicList():
                     dl = ContextDownLoader(posting_url_title+i.a.get('href'), filePathName+'\\')
                     dl.downHtmlCont()
             else:
+                print('当前第%d页, 正在下载第%d篇帖子, 共%d篇, 进度%f%%'%(curNum, item_count, len(tdList), 100*item_count/len(tdList)))
                 dl = ContextDownLoader(posting_url_title+i.a.get('href'))
                 dl.downHtmlCont()
+                item_count = item_count + 1
         time.sleep(1)
         curNum = curNum + 1
         

@@ -59,6 +59,7 @@ class ContextDownLoader(object):
         titleList = soup.find_all("title")
         try:
             title = titleList[0].string.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore').split('草榴')[0]
+            title = title.split('技術')[0]
         except IndexError as e:
             return
         print('down loading:%s'%(title))
