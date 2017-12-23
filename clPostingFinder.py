@@ -53,7 +53,7 @@ def getTopicList():
                     dl = ContextDownLoader(posting_url_title+i.a.get('href'), filePathName+'\\')
                     dl.downHtmlCont()
             else:
-                print('当前第%d页, 正在下载第%d篇帖子, 共%d篇, 进度%f%%'%(curNum, item_count, len(tdList), 100*item_count/len(tdList)))
+                print('第%d页|第%d篇|共%d篇|进度%4.2f%%'%(curNum, item_count, len(tdList), 100*item_count/len(tdList)),end='\r')
                 dl = ContextDownLoader(posting_url_title+i.a.get('href'))
                 dl.downHtmlCont()
                 item_count = item_count + 1
