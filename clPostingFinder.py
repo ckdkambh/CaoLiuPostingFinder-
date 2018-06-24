@@ -25,7 +25,10 @@ def getTopicList():
         print('第%d页'%(curNum))
         url=url_source+str(curNum)
         try:
-            get_url = requests.get(url)
+            headers = {'user-agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36 LBBROWSER','Connection':'keep-alive'}
+            get_url = requests.get(url,headers=headers)
+            #print(dir(get_url))
+            #print(get_url.text)
         except requests.exceptions.ContentDecodingError as e:
             print('requests.exceptions.ContentDecodingError...')
             time.sleep(1)
@@ -45,6 +48,7 @@ def getTopicList():
         codingTypr = get_url.encoding
         soup = BeautifulSoup(get_url.text,"html.parser")
         tdList = soup.find_all("h3")
+        print("len(tdList)=%d"%(len(tdList)))
         item_count = 1
         for i in tdList:
             title = i.a.string.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore')

@@ -7,7 +7,7 @@ from urllib.request import urlretrieve
 import os
 
 sys.setrecursionlimit(1000000) #例如这里设置为一百万
-url="http://www.t66y.com/htm_data/7/1703/2282688.html"
+url="http://www.t66y.com/htm_data/7/1806/3180328.html"
 path = 'D:\\1111\\'
   
 
@@ -33,7 +33,7 @@ class ContextDownLoader(object):
         return self.path
     
     def downHtmlCont(self):
-        headers = {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36'}
+        headers = {'user-agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36 LBBROWSER','Connection':'keep-alive'}
         while True:
             try:
                 get_url = requests.get(self.link, headers=headers)
@@ -59,7 +59,8 @@ class ContextDownLoader(object):
         titleList = soup.find_all("title")
         try:
             title = titleList[0].string.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore')
-            title = title.split('技術討論區')[0]
+            #title = title.split('技術討論區')[0]
+            title = title[0:title.rfind('技術討論區')]
         except IndexError as e:
             return
         print('down loading:%s'%(title))
@@ -72,22 +73,36 @@ class ContextDownLoader(object):
         except OSError as e:
             return
         imgList = soup.find_all("div", class_="tpc_content do_not_catch")
+        imgSrcList = []
         for i in imgList:
             #mod a link
             linkList = i.find_all("a", target="_blank")
             for j in linkList:
-                j["href"] = j.string
+                if j.string and j.string.find('www') != -1:
+                    j["href"] = j.string
             #mod img link    
             imgList = i.find_all("img")
             for j in imgList:
                 del j["onclick"]
+                if j.has_attr("src"):
+                    imgSrcList.append(j["src"])
+                else:
+                    j["src"] = j["data-src"]
+                    imgSrcList.append(j["data-src"])
             xmlText = i.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore')
             try:
                 with open(fpath, 'a') as f:
                     f.write('%s\n'%(xmlText))
             except OSError as e:
                 return
-        
+        if len(imgSrcList) > 0:
+            try:
+                with open(fpath, 'a') as f:
+                    for i in imgSrcList:
+                        f.write('<li>%s</li>\n'%(i.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore')))
+            except Exception as e:
+                print(e)
+                return
         
         
         
