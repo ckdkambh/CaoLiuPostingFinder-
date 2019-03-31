@@ -17,6 +17,8 @@ endNum = 4
 
 def getTopicList():
     curNum = startNum
+    errFileNum = 0
+    errLineNum = 0
     if not isFliter == 0:
         filePathName = path+keyWord+'_result'
         if not os.path.isdir(filePathName):
@@ -55,7 +57,10 @@ def getTopicList():
             if 1 == isFliter :
                 if keyWord in title:
                     dl = ContextDownLoader(posting_url_title+i.a.get('href'), filePathName+'\\')
-                    dl.downHtmlCont()
+                    if dl.downHtmlCont():
+                        errLineNum = errLineNum + dl.getErrLineNum()
+                    else:
+                        errFileNum = errFileNum + 1
             else:
                 print('第%d页|第%d篇|共%d篇|进度%4.2f%%'%(curNum, item_count, len(tdList), 100*item_count/len(tdList)),end='\r')
                 dl = ContextDownLoader(posting_url_title+i.a.get('href'))
@@ -63,6 +68,7 @@ def getTopicList():
                 item_count = item_count + 1
         time.sleep(1)
         curNum = curNum + 1
+    print("失败文件数：%d，失败行数：%d。"%(errFileNum, errLineNum))
         
 
 if __name__=="__main__":

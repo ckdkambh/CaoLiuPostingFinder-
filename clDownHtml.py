@@ -5,9 +5,10 @@ from array import array
 import time 
 from urllib.request import urlretrieve
 import os
+import chardet
 
 sys.setrecursionlimit(1000000) #例如这里设置为一百万
-url="http://www.t66y.com/htm_data/7/1806/3180328.html"
+url="http://www.t66y.com/htm_data/7/1903/3452255.html"
 path = 'D:\\1111\\'
   
 
@@ -17,6 +18,7 @@ class ContextDownLoader(object):
     def __init__(self, link, path='D:\\1111\\'):
         self.link = link
         self.path = path
+        self.errLineNum = 0
     
     def setLink(self,link):
         self.link = link
@@ -31,6 +33,9 @@ class ContextDownLoader(object):
     
     def getPath(self):
         return self.path
+        
+    def getErrLineNum(self):
+        return self.errLineNum
     
     def downHtmlCont(self):
         headers = {'user-agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36 LBBROWSER','Connection':'keep-alive'}
@@ -62,16 +67,16 @@ class ContextDownLoader(object):
             #title = title.split('技術討論區')[0]
             title = title[0:title.rfind('技術討論區')]
         except IndexError as e:
-            return
+            return False
         print('down loading:%s'%(title))
         fpath = self.path+title+'.html'
+
         try:
-            with open(fpath, 'w') as f:
-                f.write('')
-            with open(fpath, 'a') as f:
-                f.write('<title>%s</title>\n'%(self.link))
+            fo = open(fpath, 'w+')
+            fo.write('<title>%s</title>\n'%(self.link))
         except OSError as e:
-            return
+            print('##FAIL##')
+            return False
         imgList = soup.find_all("div", class_="tpc_content do_not_catch")
         imgSrcList = []
         for i in imgList:
@@ -90,20 +95,31 @@ class ContextDownLoader(object):
                     j["src"] = j["data-src"]
                     imgSrcList.append(j["data-src"])
             xmlText = i.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore')
+            if xmlText.find("牋") != -1:
+                xmlText = i.encode(codingTypr, errors='ignore').decode('GB2312', errors='ignore')
             try:
-                with open(fpath, 'a') as f:
-                    f.write('%s\n'%(xmlText))
-            except OSError as e:
-                return
+                fo.write('%s\n'%(xmlText))
+            except UnicodeEncodeError as e:
+                self.errLineNum = self.errLineNum + 1
+                continue
+        try:
+            fo.write('<textarea rows="%d" cols="500" readonly="readonly">\n'%(len(imgSrcList)))
+        except OSError as e:
+            return False
         if len(imgSrcList) > 0:
             try:
-                with open(fpath, 'a') as f:
-                    for i in imgSrcList:
-                        f.write('<li>%s</li>\n'%(i.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore')))
+                for i in imgSrcList:
+                    fo.write('%s\n'%(i.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore')))
             except Exception as e:
                 print(e)
-                return
-        
+                return False
+        try:
+            fo.write('</textarea>\n')
+        except OSError as e:
+            return False
+            
+        fo.close()  
+        return True
         
         
 if __name__=="__main__":
