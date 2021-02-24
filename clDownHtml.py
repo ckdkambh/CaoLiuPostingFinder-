@@ -8,7 +8,7 @@ import os
 import chardet
 
 sys.setrecursionlimit(1000000) #例如这里设置为一百万
-url="http://www.t66y.com/htm_data/7/1903/3452255.html"
+url="http://www.t66y.com/htm_data/2003/7/3848132.html"
 path = 'D:\\1111\\'
   
 
@@ -16,6 +16,7 @@ path = 'D:\\1111\\'
 class ContextDownLoader(object):
 
     def __init__(self, link, path='D:\\1111\\'):
+        # print(link)
         self.link = link
         self.path = path
         self.errLineNum = 0
@@ -45,19 +46,19 @@ class ContextDownLoader(object):
                 break
             except requests.exceptions.ContentDecodingError as e:
                 print('requests.exceptions.ContentDecodingError...')
-                time.sleep(1)
+                time.sleep(5)
                 continue
             except requests.exceptions.ProxyError as e:    
                 print('equests.exceptions.ProxyError...')
-                time.sleep(1)
+                time.sleep(5)
                 continue
             except requests.packages.urllib3.exceptions.ProtocolError as e:    
                 print('requests.packages.urllib3.exceptions.ProtocolError...')
-                time.sleep(1)
+                time.sleep(5)
                 continue
             except requests.exceptions.ConnectionError as e:    
                 print('requests.exceptions.ConnectionError...')
-                time.sleep(1)
+                time.sleep(5)
                 continue
         codingTypr = get_url.encoding
         soup = BeautifulSoup(get_url.text,"html5lib")
@@ -89,11 +90,18 @@ class ContextDownLoader(object):
             imgList = i.find_all("img")
             for j in imgList:
                 del j["onclick"]
-                if j.has_attr("src"):
-                    imgSrcList.append(j["src"])
-                else:
-                    j["src"] = j["data-src"]
-                    imgSrcList.append(j["data-src"])
+                # print(j)
+                elemList = ['src', 'data-src', 'ess-data', 'data-ess', 'data-ssa', 'data-sss']
+                isMatch = False
+                for m in elemList:
+                    if j.has_attr(m):
+                        j["src"] = j[m]
+                        imgSrcList.append(j[m])
+                        isMatch = True
+                        break
+                if not isMatch:
+                    print(self.link)
+                    print(j.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore'))
             xmlText = i.encode(codingTypr, errors='ignore').decode('gbk', errors='ignore')
             if xmlText.find("牋") != -1:
                 xmlText = i.encode(codingTypr, errors='ignore').decode('GB2312', errors='ignore')

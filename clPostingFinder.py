@@ -33,19 +33,19 @@ def getTopicList():
             #print(get_url.text)
         except requests.exceptions.ContentDecodingError as e:
             print('requests.exceptions.ContentDecodingError...')
-            time.sleep(1)
+            time.sleep(5)
             continue
         except requests.exceptions.ProxyError as e:    
             print('equests.exceptions.ProxyError...')
-            time.sleep(1)
+            time.sleep(5)
             continue
         except requests.packages.urllib3.exceptions.ProtocolError as e:    
             print('requests.packages.urllib3.exceptions.ProtocolError...')
-            time.sleep(1)
+            time.sleep(5)
             continue
         except requests.exceptions.ConnectionError as e:    
             print('requests.exceptions.ConnectionError...')
-            time.sleep(1)
+            time.sleep(5)
             continue
         codingTypr = get_url.encoding
         soup = BeautifulSoup(get_url.text,"html.parser")
@@ -66,7 +66,7 @@ def getTopicList():
                 dl = ContextDownLoader(posting_url_title+i.a.get('href'))
                 dl.downHtmlCont()
                 item_count = item_count + 1
-        time.sleep(1)
+        time.sleep(5)
         curNum = curNum + 1
     print("失败文件数：%d，失败行数：%d。"%(errFileNum, errLineNum))
         
