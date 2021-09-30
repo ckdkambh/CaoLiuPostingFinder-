@@ -12,7 +12,7 @@ posting_url_title="http://www.t66y.com/"
 keyWord = '精华'
 path = 'D:\\1111\\'
 isFliter = 0
-startNum = 1
+startNum = 2
 endNum = 4
 
 def getTopicList():
